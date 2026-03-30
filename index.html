@@ -13,44 +13,44 @@
 
     <header class="hero fade-in">
         <p class="subtitle">Football Analytics & Machine Learning</p>
-        <h1>Valuing ‘on-ball actions’ to determine the best bang for buck footballers (using XGBoost)[cite: 1].</h1>
+        <h1>Valuing ‘on-ball actions’ to determine the best bang for buck footballers (using XGBoost).</h1>
     </header>
 
     <main>
         <section class="fade-in">
-            <p>During the summer 2025 transfer window, Premier League clubs spent a record-breaking £3.19 billion on new signings—an astonishing figure[cite: 2]. However, this follows an upward trend far exceeding regular inflation in recent years[cite: 3]. With players commanding ever-larger fees, clubs face higher risks from failed transfers[cite: 4]. As a result, ensuring that money is spent wisely has become even more crucial[cite: 5].</p>
+            <p>During the summer 2025 transfer window, Premier League clubs spent a record-breaking £3.19 billion on new signings—an astonishing figure. However, this follows an upward trend far exceeding regular inflation in recent years. With players commanding ever-larger fees, clubs face higher risks from failed transfers. As a result, ensuring that money is spent wisely has become even more crucial.</p>
             
-            <p>It is challenging to quantify the impact of individual actions in football due to its low-scoring and dynamic nature however, this article examines methods for evaluating a player's value based on their ‘on-ball actions’ and identifies the most cost-effective players within the chosen dataset[cite: 6].</p>
+            <p>It is challenging to quantify the impact of individual actions in football due to its low-scoring and dynamic nature however, this article examines methods for evaluating a player's value based on their ‘on-ball actions’ and identifies the most cost-effective players within the chosen dataset.</p>
             
-            <p>Valuing actions by estimating probabilities (VAEP) is a well-established method to evaluate a players match contribution[cite: 7]. Under, VAEP a value between -1 and +1 (-1 being an action that causes a 100% probability of conceding a goal, and +1 being 100% probability of scoring a goal) is assigned to each players ‘on-ball’ action by estimating how much it increases or decreases the likelihood of the team scoring or conceding a goal in the near future[cite: 8].</p>
+            <p>Valuing actions by estimating probabilities (VAEP) is a well-established method to evaluate a players match contribution. Under, VAEP a value between -1 and +1 (-1 being an action that causes a 100% probability of conceding a goal, and +1 being 100% probability of scoring a goal) is assigned to each players ‘on-ball’ action by estimating how much it increases or decreases the likelihood of the team scoring or conceding a goal in the near future.</p>
             
-            <p>For each action, two probabilistic models calculate the change in probability of scoring and conceding from a favourable or unfavourable outcome (for example a missed pass causes the opponents to gain possession in the attacking third) based on the game state represented by the 3 last actions[cite: 9]. This allows analysts to objectively measure the impact of individual player actions beyond traditional metrics like goals or shots which account for less than 2% of all actions in a football game[cite: 10].</p>
+            <p>For each action, two probabilistic models calculate the change in probability of scoring and conceding from a favourable or unfavourable outcome (for example a missed pass causes the opponents to gain possession in the attacking third) based on the game state represented by the 3 last actions. This allows analysts to objectively measure the impact of individual player actions beyond traditional metrics like goals or shots which account for less than 2% of all actions in a football game.</p>
             
-            <p>To estimate these probabilities, we train a machine learning (ML) model. In this case, XGBoost (extreme gradient boosting) is used[cite: 11]. XGBoost has some variations but is typically a tree-based ML algorithm[cite: 12]. It has been heavily applied in many Kaggle competitions due to its great ensemble of models (boosting is a general technique to create a collection of models to form a prediction)[cite: 13]. Used for both regression and classification it boasts high predictive power and speed[cite: 14].</p>
+            <p>To estimate these probabilities, we train a machine learning (ML) model. In this case, XGBoost (extreme gradient boosting) is used. XGBoost has some variations but is typically a tree-based ML algorithm. It has been heavily applied in many Kaggle competitions due to its great ensemble of models (boosting is a general technique to create a collection of models to form a prediction). Used for both regression and classification it boasts high predictive power and speed.</p>
             
-            <p>Other libraries such as LightGBM or CatBoost are a possibility however due to its widespread use XGBoost has a larger resource pool of common bug fixes[cite: 15]. In the future I hope to further optimize VAEP analysis using newer models, but for now I will stand on the shoulder of giants[cite: 16].</p>
+            <p>Other libraries such as LightGBM or CatBoost are a possibility however due to its widespread use XGBoost has a larger resource pool of common bug fixes. In the future I hope to further optimize VAEP analysis using newer models, but for now I will stand on the shoulder of giants.</p>
         </section>
 
         <section class="fade-in">
-            <h2>Model Complexity [cite: 17]</h2>
-            <p>As a probabilistic classifier designed to estimate whether an action increases or decreases the probability of scoring, the model primarily made use of three key categorical variables: the type of action performed, the body part used to execute the action, and the result of the action itself[cite: 18]. These core features provided a solid foundation for evaluating the impact of each on-ball event[cite: 19]. By aggregating players actional values, their total offensive and defensive contributions for their team can be quantified[cite: 20].</p>
+            <h2>Model Complexity </h2>
+            <p>As a probabilistic classifier designed to estimate whether an action increases or decreases the probability of scoring, the model primarily made use of three key categorical variables: the type of action performed, the body part used to execute the action, and the result of the action itself. These core features provided a solid foundation for evaluating the impact of each on-ball event. By aggregating players actional values, their total offensive and defensive contributions for their team can be quantified.</p>
             
-            <p>To further improve the model's accuracy and relevance, additional variables were incorporated[cite: 21]. These included real-valued features, complex derived characteristics, and contextual information about the game situation such as current scoreline, and minutes played in which each action occurred[cite: 22]. By integrating these extra dimensions, the VAEP framework was able to deliver a deeper and richer assessment of a player’s influence on the match[cite: 23].</p>
+            <p>To further improve the model's accuracy and relevance, additional variables were incorporated. These included real-valued features, complex derived characteristics, and contextual information about the game situation such as current scoreline, and minutes played in which each action occurred. By integrating these extra dimensions, the VAEP framework was able to deliver a deeper and richer assessment of a player’s influence on the match.</p>
             
-            <p>However, there is a trade-off to consider when expanding the number of features used by the model[cite: 24]. Introducing too many variables can lead to overfitting, a scenario where the model becomes overly tailored to the training data[cite: 25]. In such cases, the model may perform exceptionally well during training but fail to generalise its predictions effectively to new, unseen matches[cite: 26].</p>
+            <p>However, there is a trade-off to consider when expanding the number of features used by the model. Introducing too many variables can lead to overfitting, a scenario where the model becomes overly tailored to the training data. In such cases, the model may perform exceptionally well during training but fail to generalise its predictions effectively to new, unseen matches.</p>
             
-            <p>There are many other ways of valuing player actions[cite: 27],</p>
+            <p>There are many other ways of valuing player actions,</p>
             <ul>
-                <li>‘Expected threat’ (xT) a Markov-chain based model[cite: 28].</li>
-                <li>‘Expected offensive value added’ (xOVA) which uses (non-pen xG + xA) – xA received[cite: 29].</li>
-                <li>Statsbomb with a ‘on ball value’ (OBV) metric, and many others[cite: 30].</li>
+                <li>‘Expected threat’ (xT) a Markov-chain based model.</li>
+                <li>‘Expected offensive value added’ (xOVA) which uses (non-pen xG + xA) – xA received.</li>
+                <li>Statsbomb with a ‘on ball value’ (OBV) metric, and many others.</li>
             </ul>
-            <p>I chose VAEP because it’s a well-supported open-source model that has an extensive documentation library, with lots of research regarding its applications[cite: 31].</p>
+            <p>I chose VAEP because it’s a well-supported open-source model that has an extensive documentation library, with lots of research regarding its applications.</p>
         </section>
 
         <section class="fade-in">
-            <h2>Data [cite: 32]</h2>
-            <p>The model uses the publicly available Wyscout match event dataset for training (1,941 matches, 3,251,294 events and 4,299 players), Converted into SPADL (Soccer Player Action Description Language) format to ensure the data can be used in a standardized manner[cite: 33]. The French league during the 2017/18 season was used as demonstration[cite: 34]. Market value of players was obtained through web scraping ‘transfermarkt’[cite: 35]. Data processing was conducted using Jupyter Notebooks and Python, along with the necessary libraries[cite: 36].</p>
+            <h2>Data </h2>
+            <p>The model uses the publicly available Wyscout match event dataset for training (1,941 matches, 3,251,294 events and 4,299 players), Converted into SPADL (Soccer Player Action Description Language) format to ensure the data can be used in a standardized manner. The French league during the 2017/18 season was used as demonstration. Market value of players was obtained through web scraping ‘transfermarkt’. Data processing was conducted using Jupyter Notebooks and Python, along with the necessary libraries.</p>
             
             <figure class="chart-container">
                 <img src="image1.png" alt="French League 17/18 Player Ratings Scatterplot">
@@ -59,17 +59,17 @@
         </section>
 
         <section class="fade-in">
-            <h2>Interpreting VAEP Scatterplot Results [cite: 37]</h2>
-            <p>The scatterplot presented above provides a visual representation of all players assessed in the dataset[cite: 38]. Each player's VAEP rating is averaged on a per 90 minutes basis of all their ‘on-ball actions’ during the 17/18 season (fundamentally a player with a 0.2 value has added a +0.2 goal probability for their team on average every 90 minutes), offering a standardised measure that accounts for playing time[cite: 39].</p>
+            <h2>Interpreting VAEP Scatterplot Results </h2>
+            <p>The scatterplot presented above provides a visual representation of all players assessed in the dataset. Each player's VAEP rating is averaged on a per 90 minutes basis of all their ‘on-ball actions’ during the 17/18 season (fundamentally a player with a 0.2 value has added a +0.2 goal probability for their team on average every 90 minutes), offering a standardised measure that accounts for playing time.</p>
             
-            <p>In addition to the VAEP rating, the VAEP sum represents the total value of all on-ball actions attributed to a player throughout the season without per 90 averaging[cite: 40]. This is added to account for players that consistently had huge impacts throughout an entire season (though injuries and playtime do need to be considered when looking just at VAEP sum)[cite: 41].</p>
+            <p>In addition to the VAEP rating, the VAEP sum represents the total value of all on-ball actions attributed to a player throughout the season without per 90 averaging. This is added to account for players that consistently had huge impacts throughout an entire season (though injuries and playtime do need to be considered when looking just at VAEP sum).</p>
             
-            <p>To maintain reliability and reduce the influence of small sample sizes, only players who accumulated at least 360 minutes of playing time are included in the analysis[cite: 42]. This threshold has been kept low for presenting purposes but can be tweaked to ensure only players with significant, sustained contributions are shown[cite: 43].</p>
+            <p>To maintain reliability and reduce the influence of small sample sizes, only players who accumulated at least 360 minutes of playing time are included in the analysis. This threshold has been kept low for presenting purposes but can be tweaked to ensure only players with significant, sustained contributions are shown.</p>
         </section>
 
         <section class="fade-in">
-            <h2>Action quality and quantity trade-off [cite: 44]</h2>
-            <p>What should be noted is that a high number of actions can result in lower average values per action, to assess this we can plot the average number of actions against the average value of these actions of each player, to ensure that a player isn’t receiving large ratings due to a small sample[cite: 45].</p>
+            <h2>Action quality and quantity trade-off </h2>
+            <p>What should be noted is that a high number of actions can result in lower average values per action, to assess this we can plot the average number of actions against the average value of these actions of each player, to ensure that a player isn’t receiving large ratings due to a small sample.</p>
             
             <figure class="chart-container">
                 <img src="image2.png" alt="Number of actions vs average value per action scatterplot">
@@ -77,7 +77,7 @@
         </section>
 
         <section class="fade-in">
-            <h2>Putting it to the test [cite: 46]</h2>
+            <h2>Putting it to the test </h2>
             
             <div class="side-by-side-images">
                 <img src="image3.png" alt="Upward trend arrow" class="inline-icon">
@@ -86,66 +86,66 @@
                 </figure>
             </div>
 
-            <p>The scatterplot shows us a central dot being a particular outlier compared to his market value; [cite: 47] this point is Javier Pastore, a midfielder for PSG who at the time of the 17/18 season had a market value of 15 million euros[cite: 48]. He would later be bought by AS Roma on a five-year contract at 29 years old for 24.7 million euros in June 2018. The graph allows us to clearly see undervalued players given their contributions during a season[cite: 49].</p>
+            <p>The scatterplot shows us a central dot being a particular outlier compared to his market value; this point is Javier Pastore, a midfielder for PSG who at the time of the 17/18 season had a market value of 15 million euros. He would later be bought by AS Roma on a five-year contract at 29 years old for 24.7 million euros in June 2018. The graph allows us to clearly see undervalued players given their contributions during a season.</p>
             
-            <p>With hindsight we can say he wasn’t the best signing as he would go on to have limited playing time impacted by chronic injuries requiring surgery, scoring only 4 goals in 17 appearances in the 18/19 season; [cite: 50] we can firmly say that at the time he was an undervalued player according to the data, but other qualitative factors that aren’t measured by VAEP, shouldn’t be overlooked by data analysts[cite: 51].</p>
+            <p>With hindsight we can say he wasn’t the best signing as he would go on to have limited playing time impacted by chronic injuries requiring surgery, scoring only 4 goals in 17 appearances in the 18/19 season; we can firmly say that at the time he was an undervalued player according to the data, but other qualitative factors that aren’t measured by VAEP, shouldn’t be overlooked by data analysts.</p>
             
-            <p>The use of filters to target given players (in this example player position) allows a team to judge a player’s contribution compared to similar players and evaluate whether their market value reflects their performance accordingly with a simple, easily interpreted scatterplot[cite: 52]. VAEP allows scout analysts to quickly identify players who offer the best value[cite: 53].</p>
+            <p>The use of filters to target given players (in this example player position) allows a team to judge a player’s contribution compared to similar players and evaluate whether their market value reflects their performance accordingly with a simple, easily interpreted scatterplot. VAEP allows scout analysts to quickly identify players who offer the best value.</p>
             
-            <p>Pairing it with a player clustering model (instead of a simple player position filter) which better defines players by their role (poaching forward, hybrid forward, false 9 forward, etc.) and supplemented with video footage and additional qualitative analysis such as health and fitness assessments, VAEP can provide a time-efficient tool for evaluating hundreds of players across multiple leagues during a scouting process[cite: 54].</p>
+            <p>Pairing it with a player clustering model (instead of a simple player position filter) which better defines players by their role (poaching forward, hybrid forward, false 9 forward, etc.) and supplemented with video footage and additional qualitative analysis such as health and fitness assessments, VAEP can provide a time-efficient tool for evaluating hundreds of players across multiple leagues during a scouting process.</p>
             
-            <p>When evaluating a potential player acquisition outside your own league, it is crucial to consider the relative strength of both the league and the team the player plays for[cite: 55]. These factors can significantly influence a player's perceived value and actual performance[cite: 56]. Weighted models that account for such differences are especially useful, as they allow for a more accurate comparison across leagues[cite: 57].</p>
+            <p>When evaluating a potential player acquisition outside your own league, it is crucial to consider the relative strength of both the league and the team the player plays for. These factors can significantly influence a player's perceived value and actual performance. Weighted models that account for such differences are especially useful, as they allow for a more accurate comparison across leagues.</p>
         </section>
 
         <section class="fade-in">
-            <h2>Discussion [cite: 58]</h2>
-            <p>This method of assessing player value is not without flaws; [cite: 59] although transfermarkt remains football’s most popular source for estimating market value, it relies on a wisdom of the crowd model[cite: 60]. This method can result in significant inaccuracies, particularly by overestimating the market values of players whose transfer fees were below £2.5 million[cite: 61].</p>
+            <h2>Discussion </h2>
+            <p>This method of assessing player value is not without flaws; although transfermarkt remains football’s most popular source for estimating market value, it relies on a wisdom of the crowd model. This method can result in significant inaccuracies, particularly by overestimating the market values of players whose transfer fees were below £2.5 million.</p>
             
-            <p>Another issue with wisdom of the crowd’s model is the user-submitted estimates that can easily manipulate a player’s value given the intention to inflate a players transfer fee[cite: 62]. To avoid inadvertent spending, it would be advisable to pair this with a list of recent transfers coming from similar profiled players and looking at recent transfer inflations[cite: 63].</p>
+            <p>Another issue with wisdom of the crowd’s model is the user-submitted estimates that can easily manipulate a player’s value given the intention to inflate a players transfer fee. To avoid inadvertent spending, it would be advisable to pair this with a list of recent transfers coming from similar profiled players and looking at recent transfer inflations.</p>
 
-            <h3>Comparing VAEP with Mainstream Models [cite: 64]</h3>
-            <p>When evaluating the robustness of the VAEP (Valuing Actions by Estimating Probabilities) rating system, it becomes evident that its unique approach—focused on game states and the inclusion of multiple features—results in greater variance compared to other widely used models such as Expected Threat (xT)[cite: 65]. Whereas xT employs a possession-based framework that does not incorporate additional features, VAEP’s methodology provides a more accurate evaluation of football context[cite: 66]. Since the probability of scoring from a given game state is influenced by a variety of factors[cite: 67].</p>
+            <h3>Comparing VAEP with Mainstream Models </h3>
+            <p>When evaluating the robustness of the VAEP (Valuing Actions by Estimating Probabilities) rating system, it becomes evident that its unique approach—focused on game states and the inclusion of multiple features—results in greater variance compared to other widely used models such as Expected Threat (xT). Whereas xT employs a possession-based framework that does not incorporate additional features, VAEP’s methodology provides a more accurate evaluation of football context. Since the probability of scoring from a given game state is influenced by a variety of factors.</p>
             
-            <p>Ultimately, VAEP was selected because it views football not just as a sequence of spatial transitions, but as a complex, continuous battle of risk management, defensive solidity, and contextual decision-making[cite: 68]. This comprehensive view allows for a deeper understanding of player contributions in different match scenarios[cite: 69].</p>
+            <p>Ultimately, VAEP was selected because it views football not just as a sequence of spatial transitions, but as a complex, continuous battle of risk management, defensive solidity, and contextual decision-making. This comprehensive view allows for a deeper understanding of player contributions in different match scenarios.</p>
             
-            <p>However, over the course of a full season, xT typically offers a more stable measure of player quality across the board, being less prone to fluctuations in individual performance[cite: 70]. Due to VAEP’s context-rich ratings, which, while offering more detail, also introduce greater variation in the results[cite: 71]. Therefore, for situations where sample sizes are limited or when coaching staff prioritise interpretability and the identification of playmakers rather than goalscorers, xT is the preferable model[cite: 72].</p>
+            <p>However, over the course of a full season, xT typically offers a more stable measure of player quality across the board, being less prone to fluctuations in individual performance. Due to VAEP’s context-rich ratings, which, while offering more detail, also introduce greater variation in the results. Therefore, for situations where sample sizes are limited or when coaching staff prioritise interpretability and the identification of playmakers rather than goalscorers, xT is the preferable model.</p>
             
-            <p>This is not a one size fits all model; it only accounts for on-ball actions and lacks off-ball movements such as pressing efforts, pitch control and shadow cast which is equally important for defenders if not more than their on-ball action; [cite: 73] therefore, it cannot capture the value of a defender. It’s erroneous to evaluate goalkeepers using this model, a better model for evaluating goalkeeper performance would be something like a post-strike xG model which looks at the trajectory of each shot and measures the ability of a goalkeeper to stop high quality shots[cite: 74].</p>
+            <p>This is not a one size fits all model; it only accounts for on-ball actions and lacks off-ball movements such as pressing efforts, pitch control and shadow cast which is equally important for defenders if not more than their on-ball action; therefore, it cannot capture the value of a defender. It’s erroneous to evaluate goalkeepers using this model, a better model for evaluating goalkeeper performance would be something like a post-strike xG model which looks at the trajectory of each shot and measures the ability of a goalkeeper to stop high quality shots.</p>
         </section>
 
         <section class="fade-in">
-            <h2>Conclusion [cite: 75]</h2>
+            <h2>Conclusion </h2>
             
-            <h3>Scouting and recruitment [cite: 76]</h3>
-            <p>With VAEP rating, scouts get a single aggregated metric that combines offensive output and defensive solidity which answers the ultimate question: Is this player a net positive on the pitch? [cite: 77] VAEP is excellent at identifying players who contribute massively to a team’s success without registering a high volume of traditional stats, allowing us to see what might go unnoticed in many scouting reports[cite: 78].</p>
+            <h3>Scouting and recruitment </h3>
+            <p>With VAEP rating, scouts get a single aggregated metric that combines offensive output and defensive solidity which answers the ultimate question: Is this player a net positive on the pitch? VAEP is excellent at identifying players who contribute massively to a team’s success without registering a high volume of traditional stats, allowing us to see what might go unnoticed in many scouting reports.</p>
             
-            <p>Clubs are also increasingly interested in understanding a players preferred playing style during the recruitment process, with scouts having limited time, and player characterization being a time intensive process with a large pool of potential recruits, metrics that assess a player’s ability to perform different types of actions helps filter through players that are worth paying extra attention to; [cite: 79] VAEP can be used to compute player ratings per 90 for each type of action[cite: 80]. For example, it can access all potential candidates total dribble value per 90, and total pass value per 90 and see how they stack up against one another[cite: 81].</p>
+            <p>Clubs are also increasingly interested in understanding a players preferred playing style during the recruitment process, with scouts having limited time, and player characterization being a time intensive process with a large pool of potential recruits, metrics that assess a player’s ability to perform different types of actions helps filter through players that are worth paying extra attention to; VAEP can be used to compute player ratings per 90 for each type of action. For example, it can access all potential candidates total dribble value per 90, and total pass value per 90 and see how they stack up against one another.</p>
             
-            <p>Example taken from ‘the xG football club substack’ looking at Real Madrid’s possible replacements for Ronaldo 2017/18 season using VAEP framework to compute player ratings per 90 minutes for each type of action: [cite: 82]</p>
+            <p>Example taken from ‘the xG football club substack’ looking at Real Madrid’s possible replacements for Ronaldo 2017/18 season using VAEP framework to compute player ratings per 90 minutes for each type of action: </p>
             
             <figure class="chart-container">
                 <img src="image5.png" alt="Playing style of replacement players for Neymar and Ronaldo">
             </figure>
 
-            <h3>Performance analysis and tactical assessment [cite: 83]</h3>
-            <p>With VAEP, analysts can evaluate possession chains to see exactly where value was generated or lost, this helps judge which passing networks or buildup patterns are effective at increasing scoring probabilities[cite: 84]. By evaluating a player’s action and its value added we can rate players decision-making compared to their available options, would they have increased the likelihood of a goal with a lower risk pass? [cite: 85] Pinpointing any players that take unnecessary risks in dangerous areas[cite: 86].</p>
+            <h3>Performance analysis and tactical assessment </h3>
+            <p>With VAEP, analysts can evaluate possession chains to see exactly where value was generated or lost, this helps judge which passing networks or buildup patterns are effective at increasing scoring probabilities. By evaluating a player’s action and its value added we can rate players decision-making compared to their available options, would they have increased the likelihood of a goal with a lower risk pass? Pinpointing any players that take unnecessary risks in dangerous areas.</p>
 
-            <h3>Coaching and player development [cite: 87]</h3>
-            <p>By leveraging VAEP, a club transitions from asking what happened on the pitch to understand how much it mattered[cite: 88]. It allows coaches and academy directors to pair it with video clips to show players the objective value of their habits, why certain actions like progressive carries or tackles provide huge value to the team or why other actions aren’t valued so highly[cite: 89].</p>
+            <h3>Coaching and player development </h3>
+            <p>By leveraging VAEP, a club transitions from asking what happened on the pitch to understand how much it mattered. It allows coaches and academy directors to pair it with video clips to show players the objective value of their habits, why certain actions like progressive carries or tackles provide huge value to the team or why other actions aren’t valued so highly.</p>
             
-            <p>The case study illustrates how detailed analysis of player actions and match data can reveal hidden value[cite: 90]. By understanding its limitations, integrating VAEP can provide a competitive edge by uncovering undervalued talent and refining decision-making processes in player scouting and development[cite: 91].</p>
+            <p>The case study illustrates how detailed analysis of player actions and match data can reveal hidden value. By understanding its limitations, integrating VAEP can provide a competitive edge by uncovering undervalued talent and refining decision-making processes in player scouting and development.</p>
             
-            <p>From the scouting department to financial evaluation, VAEP can also be used to evaluate player wages compared to their on-pitch performance[cite: 92]. It is generally observed that as players operate further up the pitch, their wages and transfer fees tend to rise, with centre forwards and attacking midfielders commanding the highest sums[cite: 93]. This is often attributed to the perception of their greater influence on match outcomes[cite: 94].</p>
+            <p>From the scouting department to financial evaluation, VAEP can also be used to evaluate player wages compared to their on-pitch performance. It is generally observed that as players operate further up the pitch, their wages and transfer fees tend to rise, with centre forwards and attacking midfielders commanding the highest sums. This is often attributed to the perception of their greater influence on match outcomes.</p>
             
-            <p>Assessing players' value-added through their on-ball actions, allows us to evaluate whether these advanced positions truly deliver more on ball value, or if this is merely a consequence of traditional market perceptions[cite: 95]. Are there any current forward players whose transfer fees exceed the value they contribute on the field? [cite: 96]</p>
+            <p>Assessing players' value-added through their on-ball actions, allows us to evaluate whether these advanced positions truly deliver more on ball value, or if this is merely a consequence of traditional market perceptions. Are there any current forward players whose transfer fees exceed the value they contribute on the field? </p>
         </section>
 
         <section class="fade-in acknowledgements">
-            <h2>Acknowledgements [cite: 97]</h2>
+            <h2>Acknowledgements </h2>
             <ul>
-                <li>Decroos et al., 2019 produced an amazing article on VAEP but also provides essential GitHub repositories that explain coding and underlying mathematics, broken down into intuitive sections; [cite: 98]</li>
-                <li>Coates and Parshakov, 2021 examines Transfermarkt's method for assessing market values and identified potential biases within the approach[cite: 99].</li>
-                <li>For additional insights on this topic, Mattias Sjögren's thesis offers an in-depth analysis of the challenges associated with estimating player values[cite: 100].</li>
+                <li>Decroos et al., 2019 produced an amazing article on VAEP but also provides essential GitHub repositories that explain coding and underlying mathematics, broken down into intuitive sections; </li>
+                <li>Coates and Parshakov, 2021 examines Transfermarkt's method for assessing market values and identified potential biases within the approach.</li>
+                <li>For additional insights on this topic, Mattias Sjögren's thesis offers an in-depth analysis of the challenges associated with estimating player values.</li>
             </ul>
         </section>
     </main>
