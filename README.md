@@ -1,2 +1,2 @@
-# MyProjects
-Collection of some personal Performance Analysis projects
+# Valuing actions and estimating probabilities
+Evaluating market value of Ligue 1 players using VAEP
