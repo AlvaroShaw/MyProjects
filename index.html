@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valuing On-Ball Actions — Football Analytics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+ 
+  :root {
+    --bg: #0a0f16;            
+    --card: rgba(16, 24, 39, 0.6);
+    --ink: #f3f4f6;           
+    --ink-dim: #9ca3af;       
+    --accent-blue: #3b82f6;   
+    --accent-purple: #8b5cf6; 
+    --accent-teal: #10b981;   
+    --border: rgba(243, 244, 246, 0.1);
+    
+    --serif: 'Playfair Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 60px 8vw 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 30s linear infinite;
+  }
+
+  @keyframes gridDrift {
+    from { transform: translateY(0); }
+    to   { transform: translateY(60px); }
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 70% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg) 0%, #06090d 100%);
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 28px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent-blue);
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    position: relative;
+    max-width: 1000px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent-blue);
+  }
+
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 32px;
+    max-width: 600px;
+    line-height: 1.7;
+    position: relative;
+    border-left: 2px solid var(--accent-blue);
+    padding-left: 20px;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-top: 48px;
+    position: relative;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hero-stat-n {
+    font-family: var(--serif);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    line-height: 1;
+  }
+
+  .hero-stat-l {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+ 
+  section {
+    padding: 80px 8vw;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .section-heading {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+
+  .section-heading em { font-style: italic; }
+
+  .section-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: rgba(243, 244, 246, 0.85);
+    max-width: 680px; /* Constrains line length for optimal reading */
+    margin-bottom: 48px;
+  }
+
+  .section-body p + p { margin-top: 1.2em; }
+  .section-body strong { color: var(--ink); font-weight: 500; }
+  .section-body ul { margin-top: 1em; padding-left: 1.5em; }
+  .section-body li { margin-bottom: 0.5em; }
+
+  
+  .era-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 8vw;
+    width: calc(100% - 16vw);
+  }
+
+  
+  .stat-callout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 48px 0;
+    max-width: 900px;
+  }
+
+  .stat-cell {
+    background: var(--bg);
+    padding: 28px 24px;
+    position: relative;
+  }
+
+  .stat-cell-n {
+    font-family: var(--serif);
+    font-size: 3rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-cell-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  
+  .chart-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    margin: 40px 0;
+    position: relative;
+    max-width: 800px;
+  }
+
+  /* WIDE CHART WRAP (Specifically for Image 5) */
+  .chart-wrap-wide {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 40px;
+    margin: 60px 0;
+    position: relative;
+    max-width: 1100px; /* Breaks out of the text column */
+    width: 100%;
+  }
+
+  .chart-wrap img, .chart-wrap-wide img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 2px;
+  }
+
+  .chart-caption {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink-dim);
+    margin-top: 24px;
+    line-height: 1.6;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .chart-caption strong { color: var(--ink); }
+
+  .side-by-side-charts {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .arrow-icon { width: 100%; object-fit: contain; opacity: 0.8; }
+
+ 
+  .pull-quote {
+    border-left: 3px solid var(--accent-purple);
+    padding: 24px 32px;
+    margin: 48px 0;
+    background: rgba(139, 92, 246, 0.04);
+    max-width: 760px;
+  }
+
+  .pull-quote p {
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .method-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px;
+    margin-top: 40px;
+    max-width: 900px;
+  }
+
+  .method-box h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    margin-bottom: 16px;
+  }
+
+  
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  
+  @media (max-width: 768px) {
+    section { padding: 60px 6vw; }
+    .hero { padding: 40px 6vw 60px; }
+    .side-by-side-charts { grid-template-columns: 1fr; }
+    .arrow-icon { display: none; /* Hide arrow on mobile to save space */ }
+    .chart-wrap, .chart-wrap-wide { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-tag">Football Data & Analytics</div>
+
+  <h1>Valuing <em>‘on-ball actions’</em> to determine the best bang for buck footballers</h1>
+
+  <p class="hero-sub">
+    During the summer 2025 transfer window, Premier League clubs spent a record-breaking £3.19 billion on new signings. With players commanding ever-larger fees, clubs face higher risks. This article examines methods for evaluating a player's value based on their ‘on-ball actions’ using XGBoost.
+  </p>
+
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <span class="hero-stat-n" style="color: var(--accent-blue)">£3.19B</span>
+      <span class="hero-stat-l">Record Summer Spend</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-n" style="color: var(--accent-purple)">1,941</span>
+      <span class="hero-stat-l">Matches in Dataset</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-n" style="color: var(--accent-teal)">3.25M</span>
+      <span class="hero-stat-l">Events Analysed</span>
+    </div>
+  </div>
+</section>
+
+<section id="intro" class="fade-up">
+  <div class="section-label" style="color: var(--ink-dim)">
+    <span class="dot" style="background: var(--ink-dim)"></span>
+    Introduction
+  </div>
+  <h2 class="section-heading">It is challenging to quantify the impact of individual actions in a <em>dynamic, low-scoring</em> game.</h2>
+  
+  <div class="section-body">
+    <p>However, this follows an upward trend far exceeding regular inflation in recent years. With players commanding ever-larger fees, clubs face higher risks from failed transfers. As a result, ensuring that money is spent wisely has become even more crucial.</p>
+    
+    <p><strong>Valuing actions by estimating probabilities (VAEP)</strong> is a well-established method to evaluate a players match contribution. Under VAEP, a value between -1 and +1 (-1 being an action that causes a 100% probability of conceding a goal, and +1 being 100% probability of scoring a goal) is assigned to each player's ‘on-ball’ action by estimating how much it increases or decreases the likelihood of the team scoring or conceding a goal in the near future.</p>
+    
+    <p>For each action, two probabilistic models calculate the change in probability of scoring and conceding from a favourable or unfavourable outcome (for example, a missed pass causes the opponents to gain possession in the attacking third) based on the game state represented by the 3 last actions. This allows analysts to objectively measure the impact of individual player actions beyond traditional metrics like goals or shots which account for less than 2% of all actions in a football game.</p>
+  </div>
+
+  <div class="pull-quote">
+    <p>"To estimate these probabilities, we train a machine learning model. In this case, XGBoost (extreme gradient boosting) is used... Used for both regression and classification, it boasts high predictive power and speed."</p>
+  </div>
+</section>
+
+<div class="era-divider"></div>
+
+<section id="model" class="fade-up">
+  <div class="section-label" style="color: var(--accent-purple)">
+    <span class="dot" style="background: var(--accent-purple)"></span>
+    Methodology
+  </div>
+  <h2 class="section-heading">Model <em>Complexity</em> & Features</h2>
+  
+  <div class="section-body">
+    <p>As a probabilistic classifier designed to estimate whether an action increases or decreases the probability of scoring, the model primarily made use of three key categorical variables: the type of action performed, the body part used to execute the action, and the result of the action itself. These core features provided a solid foundation for evaluating the impact of each on-ball event.</p>
+    <p>To further improve the model's accuracy and relevance, additional variables were incorporated. These included real-valued features, complex derived characteristics, and contextual information about the game situation such as current scoreline, and minutes played in which each action occurred.</p>
+    <p>However, there is a trade-off to consider. Introducing too many variables can lead to overfitting, where the model performs exceptionally well during training but fails to generalise its predictions effectively to new, unseen matches.</p>
+    
+    <p>There are many other ways of valuing player actions:</p>
+    <ul>
+      <li><strong>‘Expected threat’ (xT)</strong> a Markov-chain based model.</li>
+      <li><strong>‘Expected offensive value added’ (xOVA)</strong> which uses (non-pen xG + xA) – xA received.</li>
+      <li><strong>Statsbomb</strong> with an ‘on ball value’ (OBV) metric, and many others.</li>
+    </ul>
+    <p>I chose VAEP because it’s a well-supported open-source model that has an extensive documentation library, with lots of research regarding its applications.</p>
+  </div>
+</section>
+
+<div class="era-divider"></div>
+
+<section id="data" class="fade-up">
+  <div class="section-label" style="color: var(--accent-blue)">
+    <span class="dot" style="background: var(--accent-blue)"></span>
+    Data Application
+  </div>
+  <h2 class="section-heading">Interpreting the <em>VAEP Results</em></h2>
+  
+  <div class="section-body">
+    <p>The model uses the publicly available Wyscout match event dataset for training, converted into SPADL format. The French league during the 2017/18 season was used as demonstration. Market value of players was obtained through web scraping ‘Transfermarkt’.</p>
+  </div>
+
+  <div class="chart-wrap fade-up">
+    <img src="image1.png" alt="French League 17/18 Player Ratings Scatterplot">
+    <div class="chart-caption">
+      <strong>Interpreting VAEP:</strong> Each player's VAEP rating is averaged on a per 90 minutes basis of all their ‘on-ball actions’. A player with a 0.2 value has added a +0.2 goal probability for their team on average every 90 minutes.
+    </div>
+  </div>
+
+  <div class="section-body mt-4">
+    <p>In addition to the VAEP rating, the VAEP sum represents the total value of all on-ball actions attributed to a player throughout the season without per 90 averaging. To maintain reliability, only players who accumulated at least 360 minutes of playing time are included.</p>
+    
+    <p><strong>Action quality and quantity trade-off:</strong> What should be noted is that a high number of actions can result in lower average values per action. To assess this, we plot the average number of actions against the average value to ensure a player isn’t receiving large ratings due to a small sample.</p>
+  </div>
+
+  <div class="chart-wrap fade-up">
+    <img src="image2.png" alt="Number of actions vs average value per action scatterplot">
+  </div>
+</section>
+
+<div class="era-divider"></div>
+
+<section id="test" class="fade-up">
+  <div class="section-label" style="color: var(--accent-teal)">
+    <span class="dot" style="background: var(--accent-teal)"></span>
+    Case Study
+  </div>
+  <h2 class="section-heading">Putting it to the test:<br><em>Finding undervalued players</em></h2>
+  
+  <div class="side-by-side-charts fade-up">
+    <div class="chart-wrap" style="margin: 0;">
+      <img src="image4.png" alt="French League 17/18 Attacking Midfield Player Ratings">
+    </div>
+  </div>
+
+  <div class="stat-callout" style="margin-top: 40px;">
+    <div class="stat-cell">
+      <div class="stat-cell-n" style="color: var(--ink)">€15M</div>
+      <div class="stat-cell-label">Javier Pastore<br>17/18 Market Value</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-cell-n" style="color: var(--accent-teal)">€24.7M</div>
+      <div class="stat-cell-label">Roma Transfer Fee<br>June 2018</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-cell-n" style="color: var(--accent-purple)">4</div>
+      <div class="stat-cell-label">Goals Scored<br>18/19 Season</div>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p>The scatterplot shows us a central dot being a particular outlier compared to his market value; this point is Javier Pastore, a midfielder for PSG. He would later be bought by AS Roma on a five-year contract at 29 years old. The graph allows us to clearly see undervalued players given their contributions during a season.</p>
+    
+    <p>With hindsight we can say he wasn’t the best signing as he would go on to have limited playing time impacted by chronic injuries requiring surgery. We can firmly say that at the time he was an undervalued player according to the data, but other qualitative factors that aren’t measured by VAEP shouldn’t be overlooked.</p>
+    
+    <p>When evaluating a potential player acquisition outside your own league, it is crucial to consider the relative strength of both the league and the team the player plays for. Weighted models that account for such differences are especially useful.</p>
+  </div>
+</section>
+
+<div class="era-divider"></div>
+
+<section id="conclusion" class="fade-up">
+  <div class="section-label" style="color: var(--accent-blue)">
+    <span class="dot" style="background: var(--accent-blue)"></span>
+    Conclusion
+  </div>
+  <h2 class="section-heading">Scouting, Recruitment &<br><em>Tactical Assessment</em></h2>
+  
+  <div class="section-body">
+    <p>With VAEP rating, scouts get a single aggregated metric that combines offensive output and defensive solidity which answers the ultimate question: <strong>Is this player a net positive on the pitch?</strong></p>
+    
+    <p>Clubs are increasingly interested in understanding a player's preferred playing style during the recruitment process. Metrics that assess a player’s ability to perform different types of actions help filter through players that are worth paying extra attention to. For example, we can assess all potential candidates' total dribble value per 90, and total pass value per 90, and see how they stack up against one another.</p>
+  </div>
+
+  <div class="chart-wrap-wide fade-up">
+    <img src="image5.png" alt="Playing style of replacement players for Neymar and Ronaldo">
+    <div class="chart-caption">
+      <strong>Example taken from ‘the xG football club substack’:</strong> Looking at Real Madrid’s possible replacements for Ronaldo and Neymar (2017/18 season) using the VAEP framework to compute player ratings per 90 minutes for each distinct type of action (passes, crosses, dribbles, shots).
+    </div>
+  </div>
+
+  <div class="section-body">
+    <p><strong>Performance analysis:</strong> With VAEP, analysts can evaluate possession chains to see exactly where value was generated or lost. By evaluating a player’s action and its value added, we can rate players' decision-making compared to their available options. Would they have increased the likelihood of a goal with a lower risk pass?</p>
+    
+    <p><strong>Coaching and player development:</strong> By leveraging VAEP, a club transitions from asking what happened on the pitch to understanding how much it mattered. It allows coaches to show players the objective value of their habits—why progressive carries provide huge value, or why other actions aren’t valued highly.</p>
+    
+    <p>From the scouting department to financial evaluation, VAEP can also be used to evaluate player wages compared to their on-pitch performance. Are there any current forward players whose transfer fees exceed the value they contribute on the field?</p>
+  </div>
+</section>
+
+<section id="acknowledgements" class="fade-up">
+  <div class="method-box">
+    <h3>Acknowledgements & Sources</h3>
+    <ul style="color: var(--ink-dim); font-size: 13px; line-height: 1.6; padding-left: 20px;">
+      <li><strong>Decroos et al., 2019</strong> produced an amazing article on VAEP but also provides essential GitHub repositories that explain coding and underlying mathematics.</li>
+      <li><strong>Coates and Parshakov, 2021</strong> examines Transfermarkt's method for assessing market values and identified potential biases within the approach.</li>
+      <li><strong>Mattias Sjögren's thesis</strong> offers an in-depth analysis of the challenges associated with estimating player values.</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Select all elements that have the 'fade-up' class
+    const observerElements = document.querySelectorAll('.fade-up');
+
+    // Create the Intersection Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        // When the element scrolls into view, add the 'visible' class
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Optional: Stop observing once it has faded in
+          observer.unobserve(entry.target); 
+        }
+      });
+    }, { 
+      threshold: 0.15, // Trigger when 15% of the element is visible
+      rootMargin: "0px 0px -50px 0px" // Triggers slightly before the element hits the bottom of the screen
+    });
+
+    // Attach observer to each element
+    observerElements.forEach((el) => observer.observe(el));
+  });
+</script>
+
+</body>
+</html>
