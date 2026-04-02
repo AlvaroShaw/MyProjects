@@ -10,13 +10,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
 <style>
-  /* ── GLOBAL VARIABLES & PALETTE ───────────────────────────────────── */
+
   :root {
-    --bg-dark: #0f141e;       /* Deep slate/navy background */
-    --bg-light: #1a2130;      /* Slightly lighter card background */
-    --ink: #e2e8f0;           /* Clean off-white text */
-    --ink-muted: #94a3b8;     /* Muted gray for meta text */
-    --accent: #38bdf8;        /* Bright data blue */
+    --bg-dark: #0f141e;      
+    --bg-light: #1a2130;      
+    --ink: #e2e8f0;          
+    --ink-muted: #94a3b8;     
+    --accent: #38bdf8;        
     --border: rgba(226, 232, 240, 0.1);
     
     --serif: 'Lora', serif;
@@ -35,7 +35,6 @@
     overflow-x: hidden;
   }
 
-  /* ── HERO SECTION ───────────────────────────────────── */
   .hero {
     min-height: 85vh;
     display: flex;
@@ -47,7 +46,6 @@
     border-bottom: 1px solid var(--border);
   }
 
-  /* Subtle data-node background pattern */
   .hero-bg {
     position: absolute;
     inset: 0;
@@ -87,7 +85,6 @@
     line-height: 1.8;
   }
 
-  /* ── SECTION STRUCTURE & TYPOGRAPHY ──────────────────────── */
   section {
     padding: 80px 8vw;
     position: relative;
@@ -124,7 +121,7 @@
   .section-body {
     font-size: 1.05rem;
     color: var(--ink);
-    max-width: 720px; /* Constrains line length for optimal reading */
+    max-width: 720px; 
     margin-bottom: 48px;
   }
 
@@ -133,7 +130,6 @@
   .section-body ul { margin-top: 1.5em; padding-left: 1.5em; }
   .section-body li { margin-bottom: 0.75em; }
 
-  /* ── DIVIDER ────────────────────────────────── */
   .divider {
     width: 100%;
     height: 1px;
@@ -142,7 +138,6 @@
     max-width: 84vw;
   }
 
-  /* ── CHARTS & IMAGES ──────────────────────────────── */
   .chart-wrap {
     background: var(--bg-light);
     border: 1px solid var(--border);
@@ -153,7 +148,6 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   }
 
-  /* Specifically for Image 4 to keep it small and crisp */
   .chart-wrap-small {
     background: var(--bg-light);
     border: 1px solid var(--border);
@@ -164,7 +158,6 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   }
 
-  /* WIDE CHART WRAP (Specifically for Image 5) */
   .chart-wrap-wide {
     background: var(--bg-light);
     border: 1px solid var(--border);
@@ -207,7 +200,6 @@
     opacity: 0.7; 
   }
 
-  /* ── DATA BOXES & ACKNOWLEDGEMENTS ─────────────────────────────── */
   .info-box {
     background: var(--bg-light);
     border: 1px solid var(--border);
@@ -226,7 +218,6 @@
     margin-bottom: 24px;
   }
 
-  /* ── ANIMATIONS ─────────────────────────────── */
   .fade-up {
     opacity: 0;
     transform: translateY(20px);
@@ -238,7 +229,6 @@
     transform: translateY(0);
   }
 
-  /* ── RESPONSIVE ─────────────────────────────── */
   @media (max-width: 768px) {
     section { padding: 60px 6vw; }
     .hero { padding: 80px 6vw; }
@@ -416,7 +406,7 @@
     <ul style="color: var(--ink-muted); font-size: 0.95rem; line-height: 1.7; padding-left: 20px;">
       <li>Decroos et al., 2019 produced an amazing article on VAEP but also provides essential GitHub repositories that explain coding and underlying mathematics, broken down into intuitive sections;</li>
       <li>Coates and Parshakov, 2021 examines Transfermarkt's method for assessing market values and identified potential biases within the approach.</li>
-      <li>For additional insights on this topic, Mattias Sjögren's thesis offers an in-depth analysis of the challenges associated with estimating player values.</li>
+      <li>Marin Felices The xG football club substack for additional insights on the use and limitations of VAEP</li>
     </ul>
   </div>
 </section>
