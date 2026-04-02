@@ -227,13 +227,56 @@
     opacity: 1;
     transform: translateY(0);
   }
+  
+  footer {
+    padding: 60px 8vw;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-top: 60px;
+  }
 
+  .footer-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  footer p {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    line-height: 1.8;
+  }
+
+  .footer-right {
+    text-align: right;
+  }
+
+  .footer-right strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
   @media (max-width: 768px) {
     section { padding: 60px 6vw; }
     .hero { padding: 80px 6vw; }
     .chart-wrap, .chart-wrap-wide, .chart-wrap-small { padding: 20px; }
     .side-by-side-charts { flex-direction: column; align-items: flex-start; }
     .arrow-icon { display: none; }
+
+    footer {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 60px 6vw;
+    }
+    .footer-right {
+      text-align: left;
+    }
   }
 </style>
 </head>
@@ -410,7 +453,21 @@
   </div>
 </section>
 
-<script>
+  <footer class="fade-up">
+  <div class="footer-left">
+    <div class="footer-title">Valuing On-Ball Actions</div>
+    <p>Football Analytics &nbsp;·&nbsp; VAEP Framework<br>
+    Data: Wyscout (2017/18) · Transfermarkt</p>
+  </div>
+  
+  <div class="footer-right">
+    <p>Research & analysis: <strong>Alvaro Shaw</strong><br>
+    Portfolio piece delivering<br>
+    performance analysis research, application and data communication.</p>
+  </div>
+</footer>
+
+  <script>
   document.addEventListener("DOMContentLoaded", () => {
     const observerElements = document.querySelectorAll('.fade-up');
 
